@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SA GRAF — Gestão</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:light-dark(#f4f7fb,#0d1117);
+  --surface:light-dark(#fff,#151b23);
+  --surface2:light-dark(#f8fafc,#1b2330);
+  --text:light-dark(#172033,#f3f6fb);
+  --muted:light-dark(#6b7280,#9aa6b5);
+  --border:light-dark(#e5eaf0,#293241);
+  --brand:#ef2b2d;
+  --brand2:#ff6a3d;
+  --green:#16a36a;
+  --yellow:#e6a700;
+  --blue:#3478f6;
+  --shadow:0 12px 30px rgba(15,23,42,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.app{min-height:100vh;background:var(--bg)}
+.topbar{height:70px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:18px;padding:0 22px;position:sticky;top:0;z-index:20}
+.logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:22px;min-width:220px}
+.logo-mark{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;color:white;font-weight:950;box-shadow:0 8px 18px rgba(239,43,45,.25)}
+.search{flex:1;max-width:600px;position:relative}.search input{width:100%;padding:12px 16px 12px 42px;border:1px solid var(--border);border-radius:12px;background:var(--surface2);color:var(--text);outline:none}.search span{position:absolute;left:14px;top:10px;font-size:20px;color:var(--muted)}
+.top-actions{margin-left:auto;display:flex;align-items:center;gap:8px}.iconbtn{width:42px;height:42px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:12px}.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#202938,#596579);color:#fff;display:grid;place-items:center;font-weight:800}
+.layout{display:flex;min-height:calc(100vh - 70px)}
+.sidebar{width:245px;background:var(--surface);border-right:1px solid var(--border);padding:18px 12px;position:sticky;top:70px;height:calc(100vh - 70px);overflow:auto}
+.nav-title{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);padding:12px 12px 7px}
+.nav a{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;color:var(--muted);text-decoration:none;margin:2px 0;font-size:14px;font-weight:650}
+.nav a:hover,.nav a.active{background:rgba(239,43,45,.1);color:var(--brand)}
+.nav .ico{width:22px;text-align:center;font-size:18px}.nav .sub{margin-left:24px;font-size:13px}
+.content{flex:1;padding:28px;max-width:1500px;margin:auto;width:100%}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:24px}.head h1{margin:0;font-size:30px}.head p{margin:6px 0 0;color:var(--muted)}.primary{border:0;background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff;padding:12px 17px;border-radius:11px;font-weight:800;box-shadow:0 10px 20px rgba(239,43,45,.18)}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+.metric{display:flex;justify-content:space-between;gap:15px}.metric .label{color:var(--muted);font-size:13px;font-weight:650}.metric .value{font-size:27px;font-weight:900;margin-top:8px}.trend{font-size:12px;margin-top:7px}.up{color:var(--green)}.down{color:var(--brand)}
+.metric-icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:21px;background:var(--surface2)}
+.grid2{display:grid;grid-template-columns:1.6fr 1fr;gap:18px}.grid3{display:grid;grid-template-columns:1.15fr 1fr 1fr;gap:18px;margin-top:18px}
+.card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}.card h2{font-size:16px;margin:0}.muted{color:var(--muted);font-size:13px}
+.chart{height:250px;display:flex;align-items:end;gap:10px;padding:15px 4px 4px}.bar{flex:1;border-radius:7px 7px 2px 2px;background:linear-gradient(180deg,var(--brand2),var(--brand));min-height:8px;position:relative}.bar span{position:absolute;bottom:-23px;left:50%;transform:translateX(-50%);font-size:11px;color:var(--muted)}.bar b{position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--muted);font-weight:600}
+.list{display:flex;flex-direction:column;gap:9px}.row{display:grid;grid-template-columns:80px 1fr auto;align-items:center;gap:12px;padding:12px;border:1px solid var(--border);border-radius:11px;background:var(--surface2)}.row strong{font-size:13px}.row small{display:block;color:var(--muted);margin-top:3px}.money{font-weight:850}.pill{padding:5px 8px;border-radius:999px;font-size:11px;font-weight:800}.pill.green{background:rgba(22,163,106,.12);color:var(--green)}.pill.yellow{background:rgba(230,167,0,.14);color:var(--yellow)}.pill.red{background:rgba(239,43,45,.12);color:var(--brand)}.pill.blue{background:rgba(52,120,246,.12);color:var(--blue)}
+.shortcuts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.shortcut{border:1px solid var(--border);background:var(--surface2);border-radius:12px;padding:14px;text-align:left;color:var(--text);font-weight:750}.shortcut small{display:block;color:var(--muted);font-weight:500;margin-top:4px}
+.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:11px 8px;border-bottom:1px solid var(--border);font-size:13px}.table th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+.donut{width:175px;height:175px;border-radius:50%;background:conic-gradient(var(--brand) 0 42%,var(--blue) 42% 70%,var(--green) 70% 88%,var(--yellow) 88% 100%);display:grid;place-items:center;margin:8px auto}.donut:after{content:"";width:105px;height:105px;border-radius:50%;background:var(--surface)}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.legend div{font-size:12px;color:var(--muted)}.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.48);display:none;z-index:50}.modal{position:absolute;right:0;top:0;height:100%;width:min(440px,92vw);background:var(--surface);padding:24px;overflow:auto}.modal.open{display:block}.overlay.open{display:block}.close{float:right;border:0;background:none;color:var(--muted);font-size:25px}.field{margin:15px 0}.field label{display:block;font-size:12px;color:var(--muted);font-weight:750;margin-bottom:6px}.field input,.field select,.field textarea{width:100%;border:1px solid var(--border);background:var(--surface2);color:var(--text);border-radius:10px;padding:11px;outline:none}.footer{color:var(--muted);font-size:12px;text-align:center;padding:30px}
+@media(max-width:1050px){.cards{grid-template-columns:repeat(2,1fr)}.grid2,.grid3{grid-template-columns:1fr}.sidebar{width:210px}}
+@media(max-width:760px){.sidebar{display:none}.content{padding:18px}.topbar{padding:0 14px}.logo{min-width:auto}.logo span:last-child{display:none}.search{display:none}.cards{grid-template-columns:1fr 1fr}.head{align-items:flex-start;flex-direction:column}.shortcuts{grid-template-columns:1fr}.row{grid-template-columns:65px 1fr}.row .money{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div class="logo"><div class="logo-mark">SA</div><span>SA GRAF</span></div>
+  <div class="search"><span>⌕</span><input id="search" placeholder="Pesquisar clientes, pedidos, produtos..."></div>
+  <div class="top-actions">
+    <button class="iconbtn" title="Notificações" onclick="toast('Você não tem novas notificações.')">🔔</button>
+    <button class="iconbtn" title="Tema" onclick="toggleTheme()">◐</button>
+    <div class="avatar">SK</div>
+  </div>
+</header>
+<div class="layout">
+<aside class="sidebar">
+  <div class="nav">
+    <div class="nav-title">Principal</div>
+    <a class="active" href="#dashboard">⌂ <span>Visão Geral</span></a>
+    <div class="nav-title">Cadastro</div>
+    <a href="#clientes">♙ <span>Clientes</span></a>
+    <a href="#fornecedores">▣ <span>Fornecedores</span></a>
+    <a href="#produtos">◫ <span>Produtos</span></a>
+    <a href="#servicos">✦ <span>Serviços</span></a>
+    <a href="#estoque">▤ <span>Estoque</span></a>
+    <div class="nav-title">Vendas</div>
+    <a href="#pedidos">🛒 <span>Pedidos</span></a>
+    <a href="#orcamentos">▣ <span>Orçamentos</span></a>
+    <a href="#notas">▤ <span>Notas Fiscais</span></a>
+    <div class="nav-title">Financeiro</div>
+    <a href="#financeiro">◈ <span>Fluxo de Caixa</span></a>
+    <a href="#receber">↗ <span>Contas a Receber</span></a>
+    <a href="#pagar">↘ <span>Contas a Pagar</span></a>
+    <div class="nav-title">Produção</div>
+    <a href="#producao">⚙ <span>Itens dos Pedidos</span></a>
+    <a href="#status">◷ <span>Alterar Status</span></a>
+    <a href="#os">▱ <span>Ordem de Serviço</span></a>
+    <div class="nav-title">Sistema</div>
+    <a href="#config">⚙ <span>Configurações</span></a>
+    <a href="#cliente-area">🔎 <span>Área do Cliente</span></a>
+    <a href="#suporte" onclick="toast('Central de suporte aberta.')">? <span>Suporte</span></a>
+  </div>
+</aside>
+<main class="content" id="dashboard">
+  <div class="head">
+    <div><h1>Bom dia, SA GRAF 👋</h1><p>Painel de controle da sua gráfica e comunicação visual.</p></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="iconbtn" onclick="show('cliente-area')" title="Área do Cliente">🔎 Cliente</button><button class="primary" onclick="openModal()">＋ Novo orçamento</button></div>
+  </div>
+
+  <section class="cards">
+    <div class="card metric"><div><div class="label">Vendas no mês</div><div class="value">R$ 48.620</div><div class="trend up">▲ 12,8% vs. mês anterior</div></div><div class="metric-icon">💰</div></div>
+    <div class="card metric"><div><div class="label">Pedidos em produção</div><div class="value">27</div><div class="trend">8 para entregar hoje</div></div><div class="metric-icon">🖨️</div></div>
+    <div class="card metric"><div><div class="label">A receber</div><div class="value">R$ 18.940</div><div class="trend up">23 títulos em aberto</div></div><div class="metric-icon">↗</div></div>
+    <div class="card metric"><div><div class="label">A pagar</div><div class="value">R$ 9.870</div><div class="trend down">4 contas vencendo</div></div><div class="metric-icon">↘</div></div>
+  </section>
+
+  <section class="grid2">
+    <div class="card">
+      <div class="card-head"><div><h2>Fluxo de caixa</h2><span class="muted">Receitas x despesas — últimos 6 meses</span></div><select onchange="toast('Período atualizado.')"><option>2026</option><option>2025</option></select></div>
+      <div class="chart">
+        <div class="bar" style="height:58%"><b>R$ 32k</b><span>abr</span></div>
+        <div class="bar" style="height:72%"><b>R$ 39k</b><span>mai</span></div>
+        <div class="bar" style="height:64%"><b>R$ 35k</b><span>jun</span></div>
+        <div class="bar" style="height:82%"><b>R$ 45k</b><span>jul</span></div>
+        <div class="bar" style="height:76%"><b>R$ 42k</b><span>ago</span></div>
+        <div class="bar" style="height:92%"><b>R$ 49k</b><span>set</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div><h2>Atalhos</h2><span class="muted">Acesso rápido</span></div></div>
+      <div class="shortcuts">
+        <button class="shortcut" onclick="openModal('Orçamento')">🧮 Orçamento<small>Criar novo</small></button>
+        <button class="shortcut" onclick="openModal('Pedido')">📋 Pedido<small>Novo pedido</small></button>
+        <button class="shortcut" onclick="toast('Tela de clientes selecionada.')">👥 Clientes<small>Consultar</small></button>
+        <button class="shortcut" onclick="toast('Produção aberta.')">🏭 Produção<small>Ver fila</small></button>
+        <button class="shortcut" onclick="toast('Financeiro aberto.')">💳 Financeiro<small>Lançamentos</small></button>
+        <button class="shortcut" onclick="toast('Relatórios abertos.')">📊 Relatórios<small>Indicadores</small></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="grid3">
+    <div class="card">
+      <div class="card-head"><div><h2>Próximos recebimentos</h2><span class="muted">Contas em aberto</span></div><span class="pill green">23</span></div>
+      <div class="list">
+        <div class="row"><div><strong>30/09</strong></div><div><strong>Mercadinho Central</strong><small>Pedido #1048</small></div><div class="money">R$ 1.850</div></div>
+        <div class="row"><div><strong>01/10</strong></div><div><strong>Prefeitura</strong><small>Pedido #1039</small></div><div class="money">R$ 3.200</div></div>
+        <div class="row"><div><strong>03/10</strong></div><div><strong>Big Bem</strong><small>Pedido #1052</small></div><div class="money">R$ 2.740</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div><h2>Pagamentos</h2><span class="muted">Próximos vencimentos</span></div><span class="pill yellow">9</span></div>
+      <div class="list">
+        <div class="row"><div><strong>30/09</strong></div><div><strong>Fornecedor de lona</strong><small>Compra #823</small></div><div class="money">R$ 980</div></div>
+        <div class="row"><div><strong>02/10</strong></div><div><strong>Energia elétrica</strong><small>Despesa fixa</small></div><div class="money">R$ 1.420</div></div>
+        <div class="row"><div><strong>04/10</strong></div><div><strong>Distribuidora de tinta</strong><small>Compra #829</small></div><div class="money">R$ 2.100</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><div><h2>Classificação</h2><span class="muted">Vendas por categoria</span></div></div>
+      <div class="donut"></div>
+      <div class="legend">
+        <div><i class="dot" style="background:var(--brand)"></i>Banners 42%</div>
+        <div><i class="dot" style="background:var(--blue)"></i>Adesivos 28%</div>
+        <div><i class="dot" style="background:var(--green)"></i>Fachadas 18%</div>
+        <div><i class="dot" style="background:var(--yellow)"></i>Outros 12%</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" style="margin-top:18px">
+    <div class="card-head"><div><h2>Pedidos recentes</h2><span class="muted">Acompanhe os trabalhos da SA GRAF</span></div><button class="iconbtn" onclick="toast('Lista atualizada.')">↻</button></div>
+    <table class="table">
+      <thead><tr><th>Pedido</th><th>Cliente</th><th>Produto</th><th>Entrega</th><th>Valor</th><th>Status</th></tr></thead>
+      <tbody id="orders">
+        <tr><td>#1058</td><td>Big Bem Supermercado</td><td>Faixa 3×0,8m</td><td>30/09</td><td>R$ 680</td><td><span class="pill blue">Impressão</span></td></tr>
+        <tr><td>#1057</td><td>Empório dos Espetos</td><td>Adesivos personalizados</td><td>30/09</td><td>R$ 420</td><td><span class="pill yellow">Acabamento</span></td></tr>
+        <tr><td>#1056</td><td>Cliente balcão</td><td>Cartões de visita</td><td>01/10</td><td>R$ 180</td><td><span class="pill green">Pronto</span></td></tr>
+        <tr><td>#1055</td><td>Empresa local</td><td>Fachada ACM</td><td>03/10</td><td>R$ 4.850</td><td><span class="pill red">Aprovação</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+  <div class="footer">2026 © SK Impressos — Gestão de impressão, comunicação visual e produção.</div>
+</main>
+</div>
+</div>
+
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="close" onclick="closeModal()">×</button>
+    <h2 id="modalTitle">Novo orçamento</h2>
+    <p class="muted">Cadastre rapidamente uma nova oportunidade para a SA GRAF.</p>
+    <div class="field" id="logoField"><label>Logo da empresa</label><input id="companyLogo" type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp" onchange="previewLogo(event)"><small class="muted">Envie a logo para personalizar o cadastro do cliente.</small><div id="logoPreview" style="margin-top:10px"></div></div>
+    <div class="field"><label>Cliente</label><input id="client" placeholder="Nome do cliente"></div>
+    <div class="field"><label>Produto / serviço</label><select id="product"><option>Banner / Lona</option><option>Adesivo</option><option>Cartão de visita</option><option>Fachada / ACM</option><option>Placa / PVC</option><option>Arte gráfica</option></select></div>
+    <div class="field"><label>Valor estimado</label><input id="amount" placeholder="R$ 0,00"></div>
+    <div class="field"><label>Observações</label><textarea id="notes" rows="4" placeholder="Detalhes do trabalho..."></textarea></div>
+    <button class="primary" style="width:100%" onclick="saveOrder()">Salvar orçamento</button>
+  </div>
+</div>
+<script>
+const KEY='sa_graf_v2';
+const db=JSON.parse(localStorage.getItem(KEY)||'null')||{
+clientes:[{id:1,nome:'Big Bem Supermercado',telefone:'(63) 99999-0000',email:'contato@bigbem.com',cidade:'Paraíso do Tocantins'}],
+fornecedores:[{id:1,nome:'Fornecedor de lona',telefone:'(63) 3222-0000'}],
+produtos:[{id:1,nome:'Banner / Lona',categoria:'Impressão',estoque:120,preco:35},{id:2,nome:'Adesivo',categoria:'Adesivos',estoque:500,preco:12}],
+servicos:[{id:1,nome:'Arte gráfica',preco:80},{id:2,nome:'Fachada / ACM',preco:180}],
+orcamentos:[{id:1048,cliente:'Big Bem Supermercado',descricao:'Faixa 3×0,8m',valor:680,status:'Aprovado'}],
+pedidos:[{id:1058,cliente:'Big Bem Supermercado',produto:'Faixa 3×0,8m',valor:680,status:'Impressão',entrega:'30/09'}],
+contasReceber:[{id:1,cliente:'Mercadinho Central',descricao:'Pedido #1048',valor:1850,vencimento:'30/09',status:'Aberto'}],
+contasPagar:[{id:1,fornecedor:'Fornecedor de lona',descricao:'Compra #823',valor:980,vencimento:'30/09',status:'Aberto'}],
+movimentos:[],os:[]};
+function persist(){localStorage.setItem(KEY,JSON.stringify(db))}
+function previewLogo(event){const file=event.target.files?.[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{const img=document.getElementById('logoPreview');img.innerHTML='<img src="'+reader.result+'" style="max-width:180px;max-height:80px;object-fit:contain;border:1px solid var(--border);border-radius:10px;padding:8px;background:#fff"><button type="button" class="iconbtn" style="margin-left:8px;vertical-align:top" onclick="clearLogo()">×</button>';db.config={...(db.config||{}),logo:reader.result};persist()};reader.readAsDataURL(file)}
+function clearLogo(){if(document.getElementById('companyLogo'))document.getElementById('companyLogo').value='';document.getElementById('logoPreview').innerHTML='';db.config={...(db.config||{}),logo:''};persist()}
+function toast(msg){let t=document.getElementById('toast');if(!t){t=document.createElement('div');t.id='toast';Object.assign(t.style,{position:'fixed',bottom:'22px',right:'22px',background:'#172033',color:'#fff',padding:'13px 17px',borderRadius:'10px',zIndex:100,fontWeight:700,boxShadow:'0 10px 30px #0003'});document.body.appendChild(t)}t.textContent=msg;t.style.opacity='1';clearTimeout(window.__t);window.__t=setTimeout(()=>t.style.opacity='0',2400)}
+function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function money(v){return Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+function nextId(a,start=1){return a.length?Math.max(...a.map(x=>Number(x.id)||0))+1:start}
+function layout(){document.querySelectorAll('.nav a').forEach(a=>a.onclick=e=>{e.preventDefault();show(a.getAttribute('href').slice(1))});document.getElementById('search').oninput=e=>searchAll(e.target.value)}
+function show(page){
+ const m={dashboard:['Visão Geral','Painel de controle da SA GRAF'],clientes:['Clientes','Cadastro e relacionamento'],fornecedores:['Fornecedores','Parceiros e fornecedores'],produtos:['Produtos','Catálogo e estoque'],servicos:['Serviços','Serviços oferecidos'],estoque:['Estoque','Controle de entradas e saídas'],pedidos:['Pedidos','Pedidos e trabalhos em produção'],orcamentos:['Orçamentos','Propostas comerciais'],notas:['Notas Fiscais','Controle fiscal'],financeiro:['Fluxo de Caixa','Visão financeira'],receber:['Contas a Receber','Valores que a empresa tem a receber'],pagar:['Contas a Pagar','Despesas e compromissos'],producao:['Produção','Fila de trabalhos'],status:['Alterar Status','Acompanhe cada etapa'],os:['Ordem de Serviço','Ordens de serviço'],config:['Configurações','Preferências do sistema'],cliente-area:['Área do Cliente','Acompanhe seu pedido em tempo real']}[page]||['Visão Geral','Painel de controle'];
+ document.querySelectorAll('.nav a').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+page));
+ const main=document.querySelector('main.content');main.innerHTML=`<div class="head"><div><h1>${m[0]}</h1><p>${m[1]}</p></div><button class="primary" onclick="newRecord('${page}')">＋ Novo</button></div><div id="module"></div><div class="footer">2026 © SK Impressos — Gestão de impressão, comunicação visual e produção.</div>`;
+ render(page);window.scrollTo({top:0,behavior:'smooth'})
+}
+function render(page){
+ const el=document.getElementById('module');let html='';
+ if(page==='dashboard'){const vendas=db.pedidos.reduce((s,x)=>s+Number(x.valor||0),0),receber=db.contasReceber.reduce((s,x)=>s+Number(x.valor||0),0),pagar=db.contasPagar.reduce((s,x)=>s+Number(x.valor||0),0),prod=db.pedidos.filter(x=>!['Pronto','Entregue'].includes(x.status)).length;html=`<section class="cards"><div class="card metric"><div><div class="label">Vendas cadastradas</div><div class="value">${money(vendas)}</div><div class="trend up">${db.pedidos.length} pedidos</div></div><div class="metric-icon">💰</div></div><div class="card metric"><div><div class="label">Em produção</div><div class="value">${prod}</div><div class="trend">Acompanhe a fila</div></div><div class="metric-icon">🖨️</div></div><div class="card metric"><div><div class="label">A receber</div><div class="value">${money(receber)}</div><div class="trend up">${db.contasReceber.length} títulos</div></div><div class="metric-icon">↗</div></div><div class="card metric"><div><div class="label">A pagar</div><div class="value">${money(pagar)}</div><div class="trend down">${db.contasPagar.length} contas</div></div><div class="metric-icon">↘</div></div></section><section class="grid2"><div class="card"><div class="card-head"><div><h2>Atalhos</h2><span class="muted">Operações rápidas</span></div></div><div class="shortcuts"><button class="shortcut" onclick="newRecord('orcamentos')">🧮 Orçamento<small>Criar proposta</small></button><button class="shortcut" onclick="newRecord('pedidos')">📋 Pedido<small>Novo pedido</small></button><button class="shortcut" onclick="newRecord('clientes')">👥 Cliente<small>Cadastrar</small></button><button class="shortcut" onclick="show('producao')">🏭 Produção<small>Ver fila</small></button><button class="shortcut" onclick="show('financeiro')">💳 Financeiro<small>Movimentos</small></button><button class="shortcut" onclick="show('relatorios')">📊 Relatórios<small>Indicadores</small></button></div></div><div class="card"><div class="card-head"><div><h2>Resumo</h2><span class="muted">Base atual</span></div></div><div class="list"><div class="row"><div>👥</div><div><strong>Clientes</strong><small>Cadastros ativos</small></div><div class="money">${db.clientes.length}</div></div><div class="row"><div>📦</div><div><strong>Produtos</strong><small>Itens cadastrados</small></div><div class="money">${db.produtos.length}</div></div><div class="row"><div>🧾</div><div><strong>Orçamentos</strong><small>Propostas registradas</small></div><div class="money">${db.orcamentos.length}</div></div></div></div></section><section class="card" style="margin-top:18px"><div class="card-head"><div><h2>Pedidos recentes</h2><span class="muted">Últimos trabalhos</span></div></div>${tablePedidos()}</section>`;el.innerHTML=html;return}
+ const tables={clientes:[['Nome','Telefone','E-mail','Cidade'],...db.clientes.map(x=>[x.nome,x.telefone,x.email,x.cidade])],fornecedores:[['Nome','Telefone'],...db.fornecedores.map(x=>[x.nome,x.telefone])],produtos:[['Produto','Categoria','Estoque','Preço'],...db.produtos.map(x=>[x.nome,x.categoria,x.estoque,money(x.preco)])],servicos:[['Serviço','Preço'],...db.servicos.map(x=>[x.nome,money(x.preco)])],orcamentos:[['Nº','Cliente','Descrição','Valor','Status'],...db.orcamentos.map(x=>['#'+x.id,x.cliente,x.descricao,money(x.valor),x.status])],pedidos:[['Nº','Cliente','Produto','Entrega','Valor','Status'],...db.pedidos.map(x=>['#'+x.id,x.cliente,x.produto,x.entrega,money(x.valor),x.status])],receber:[['Cliente','Descrição','Vencimento','Valor','Status'],...db.contasReceber.map(x=>[x.cliente,x.descricao,x.vencimento,money(x.valor),x.status])],pagar:[['Fornecedor','Descrição','Vencimento','Valor','Status'],...db.contasPagar.map(x=>[x.fornecedor,x.descricao,x.vencimento,money(x.valor),x.status])]};
+ if(tables[page]){el.innerHTML=`<section class="card"><div class="card-head"><div><h2>Registros</h2><span class="muted">Dados salvos neste navegador</span></div></div>${table(tables[page])}</section>`;return}
+ if(page==='estoque'){el.innerHTML=`<section class="card"><div class="card-head"><h2>Posição de estoque</h2></div>${table([['Produto','Categoria','Quantidade','Valor unitário'],...db.produtos.map(x=>[x.nome,x.categoria,x.estoque,money(x.preco)])])}</section>`;return}
+ if(['producao','status'].includes(page)){el.innerHTML=`<section class="card"><div class="card-head"><h2>Fila de produção</h2></div>${table([['Pedido','Cliente','Produto','Status','Entrega'],...db.pedidos.map(x=>['#'+x.id,x.cliente,x.produto,x.status,x.entrega])])}</section>`;return}
+ if(page==='financeiro'){const r=db.contasReceber.reduce((s,x)=>s+Number(x.valor||0),0),p=db.contasPagar.reduce((s,x)=>s+Number(x.valor||0),0);el.innerHTML=`<section class="cards"><div class="card metric"><div><div class="label">Receitas</div><div class="value">${money(r)}</div></div><div class="metric-icon">↗</div></div><div class="card metric"><div><div class="label">Despesas</div><div class="value">${money(p)}</div></div><div class="metric-icon">↘</div></div><div class="card metric"><div><div class="label">Saldo projetado</div><div class="value">${money(r-p)}</div></div><div class="metric-icon">💰</div></div></section><section class="grid2"><div class="card"><h2>Recebimentos</h2>${table([['Cliente','Descrição','Valor'],...db.contasReceber.map(x=>[x.cliente,x.descricao,money(x.valor)])])}</div><div class="card"><h2>Pagamentos</h2>${table([['Fornecedor','Descrição','Valor'],...db.contasPagar.map(x=>[x.fornecedor,x.descricao,money(x.valor)])])}</div></section>`;return}
+ if(page==='cliente-area'){el.innerHTML=`<section class="card"><div style="max-width:760px;margin:auto;text-align:center;padding:25px 10px"><div class="metric-icon" style="margin:0 auto 15px;width:58px;height:58px">🔎</div><h2 style="font-size:24px">Acompanhe seu pedido</h2><p class="muted" style="margin-bottom:22px">Digite o número do pedido para consultar o andamento, prazo de entrega e etapas da produção.</p><div style="display:flex;gap:10px;max-width:520px;margin:auto"><input id="trackCode" class="field input" style="flex:1;border:1px solid var(--border);background:var(--surface2);color:var(--text);border-radius:10px;padding:12px" placeholder="Ex.: 1058"><button class="primary" onclick="trackOrder()">Consultar pedido</button></div><div id="trackingResult" style="margin-top:24px"></div></div></section>`;return}
+ if(page==='notas'){el.innerHTML='<section class="card"><h2>Notas Fiscais</h2><p class="muted">Módulo preparado para integração com emissão fiscal. A emissão real será conectada após definirmos o provedor fiscal e a hospedagem.</p></section>';return}
+ if(page==='os'){el.innerHTML=`<section class="card"><div class="card-head"><h2>Ordens de Serviço</h2><button class="primary" onclick="newRecord('os')">＋ Nova OS</button></div>${table([['OS','Cliente','Descrição','Status'],...db.os.map(x=>['#'+x.id,x.cliente,x.descricao,x.status])])}</section>`;return}
+ if(page==='config'){el.innerHTML='<section class="card"><h2>Configurações</h2><div class="field"><label>Empresa</label><input id="empresa" value="SK Impressos"></div><button class="primary" onclick="toast(\'Configurações salvas!\')">Salvar configurações</button></section>';return}
+ el.innerHTML='<section class="card"><h2>Módulo em preparação</h2><p class="muted">A estrutura está criada e será conectada às funções reais na próxima etapa.</p></section>'
+}
+ function table(rows){return '<div style="overflow:auto"><table class="table"><thead><tr>'+rows[0].map(x=>'<th>'+esc(x)+'</th>').join('')+'</tr></thead><tbody>'+rows.slice(1).map(r=>'<tr>'+r.map(x=>'<td>'+esc(x)+'</td>').join('')+'</tr>').join('')+'</tbody></table></div>'}
+ function tablePedidos(){return table([['Pedido','Cliente','Produto','Entrega','Valor','Status'],...db.pedidos.slice(-8).reverse().map(x=>['#'+x.id,x.cliente,x.produto,x.entrega,money(x.valor),x.status])])}
+ function searchAll(q){q=q.toLowerCase();document.querySelectorAll('main .table tbody tr').forEach(r=>r.style.display=r.textContent.toLowerCase().includes(q)?'':'none')}
+ function trackOrder(){const code=String(document.getElementById('trackCode')?.value||'').replace('#','').trim();const p=db.pedidos.find(x=>String(x.id)===code);const box=document.getElementById('trackingResult');if(!box)return;if(!p){box.innerHTML='<div class="card" style="text-align:left"><strong>Pedido não encontrado.</strong><p class="muted">Confira o número informado ou entre em contato com a SA GRAF.</p></div>';return}const steps=['Novo','Aprovação','Impressão','Acabamento','Pronto','Entregue'];const idx=Math.max(0,steps.indexOf(p.status));box.innerHTML='<div class="card" style="text-align:left"><div class="card-head"><div><h2>Pedido #'+esc(p.id)+'</h2><span class="muted">'+esc(p.cliente)+'</span></div><span class="pill blue">'+esc(p.status)+'</span></div><p><strong>Produto:</strong> '+esc(p.produto)+' &nbsp; <strong>Entrega:</strong> '+esc(p.entrega)+'</p><div style="display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:25px">'+steps.map((s,i)=>'<div style="text-align:center"><div style="height:10px;border-radius:10px;background:'+(i<=idx?'var(--green)':'var(--border)')+'"></div><small style="display:block;margin-top:7px;color:'+(i<=idx?'var(--text)':'var(--muted)')+'">'+s+'</small></div>').join('')+'</div></div>'}
+ function newRecord(type){
+ const labels={clientes:['Novo cliente',['Nome','Telefone','E-mail','Cidade']],fornecedores:['Novo fornecedor',['Nome','Telefone']],produtos:['Novo produto',['Nome','Categoria','Estoque','Preço']],servicos:['Novo serviço',['Nome','Preço']],orcamentos:['Novo orçamento',['Cliente','Descrição','Valor']],pedidos:['Novo pedido',['Cliente','Produto','Valor','Entrega']],receber:['Nova conta a receber',['Cliente','Descrição','Valor','Vencimento']],pagar:['Nova conta a pagar',['Fornecedor','Descrição','Valor','Vencimento']],os:['Nova ordem de serviço',['Cliente','Descrição']]};
+ if(!labels[type]){toast('Módulo disponível em breve.');return}
+ const [title,fields]=labels[type];document.getElementById('modalTitle').textContent=title;const form=document.querySelector('.modal');form.querySelector('p').textContent='Preencha os dados para cadastrar no sistema.';form.querySelector('.field').style.display='none';form.querySelectorAll('.dynamic-field').forEach(x=>x.remove());fields.forEach((f,i)=>{const d=document.createElement('div');d.className='field dynamic-field';d.innerHTML='<label>'+f+'</label><input id="f'+i+'" placeholder="'+f+'">';form.querySelector('.primary').before(d)});form.querySelector('.primary').textContent='Salvar';form.querySelector('.primary').onclick=()=>saveRecord(type,fields);document.getElementById('overlay').classList.add('open')
+ }
+ function saveRecord(type,fields){const v=fields.map((_,i)=>document.getElementById('f'+i).value.trim());if(!v[0]){toast('Preencha os campos obrigatórios.');return}const id=nextId(db[type]||[],1);let x={id};if(type==='clientes')Object.assign(x,{nome:v[0],telefone:v[1],email:v[2],cidade:v[3]});if(type==='fornecedores')Object.assign(x,{nome:v[0],telefone:v[1]});if(type==='produtos')Object.assign(x,{nome:v[0],categoria:v[1],estoque:Number(v[2])||0,preco:Number(v[3])||0});if(type==='servicos')Object.assign(x,{nome:v[0],preco:Number(v[1])||0});if(type==='orcamentos')Object.assign(x,{cliente:v[0],descricao:v[1],valor:Number(v[2])||0,status:'Novo'});if(type==='pedidos')Object.assign(x,{cliente:v[0],produto:v[1],valor:Number(v[2])||0,entrega:v[3]||'A definir',status:'Novo'});if(type==='receber')Object.assign(x,{cliente:v[0],descricao:v[1],valor:Number(v[2])||0,vencimento:v[3],status:'Aberto'});if(type==='pagar')Object.assign(x,{fornecedor:v[0],descricao:v[1],valor:Number(v[2])||0,vencimento:v[3],status:'Aberto'});if(type==='os')Object.assign(x,{cliente:v[0],descricao:v[1],status:'Aberta'});db[type].push(x);persist();closeModal();show(type);toast('Registro salvo com sucesso!')}
+ function closeModal(){document.getElementById('overlay').classList.remove('open')}
+ function openModal(){newRecord('orcamentos')}
+ function toggleTheme(){document.documentElement.classList.toggle('force-dark');document.documentElement.style.colorScheme=document.documentElement.classList.contains('force-dark')?'dark':'light'}
+ layout();show('dashboard');
+</script>
+</body>
+</html>
